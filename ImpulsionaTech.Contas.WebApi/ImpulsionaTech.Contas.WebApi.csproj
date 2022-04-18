@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\Clientes\" />
+    <Folder Include="DTOs\Contas\" />
+    <Folder Include="DTOs\MovimentacoesBancarias\" />
+    <Folder Include="DTOs\TiposConta\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.24" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImpulsionaTech.Contas.Infrastructure\ImpulsionaTech.Contas.Infrastructure.csproj" />
+    <ProjectReference Include="..\ImpulsionaTech.Contas.Service\ImpulsionaTech.Contas.Application.csproj" />
+  </ItemGroup>
+
+
+</Project>
