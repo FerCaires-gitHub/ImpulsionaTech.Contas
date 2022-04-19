@@ -23,7 +23,16 @@ namespace ImpulsionaTech.Contas.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Entity<TipoConta>().
+                HasOne(b => b.Conta).
+                WithOne(a => a.TipoConta).
+                HasForeignKey<Conta>(a => a.TipoContaId);
+
+            modelBuilder.Entity<Conta>().
+                HasOne(b => b.Cliente).
+                WithMany(a  => a.Contas).
+                HasForeignKey(a => a.ClienteId);
+
             modelBuilder.Entity<Conta>().
                 HasIndex(a => new { a.ClienteId, a.TipoContaId })
                 .IsUnique();

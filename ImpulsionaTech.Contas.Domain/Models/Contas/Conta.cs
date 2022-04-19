@@ -13,13 +13,13 @@ namespace ImpulsionaTech.Contas.Domain.Models.Contas
         public int ContaId { get; set; }
 
         [Required]
-        [ForeignKey("TipoContaId")]
         public int TipoContaId { get; set; }
+        public TipoConta TipoConta { get; set; }
         public decimal Saldo { get; set; }
         
         [Required]
-        [ForeignKey("ClienteId")]
         public int ClienteId { get; set; }
+        public Cliente Cliente { get; set; }
     }
 }
 

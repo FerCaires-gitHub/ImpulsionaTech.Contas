@@ -3,15 +3,17 @@ using System;
 using ImpulsionaTech.Contas.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ImpulsionaTech.Contas.Infrastructure.Migrations
 {
     [DbContext(typeof(EFContext))]
-    partial class EFContextModelSnapshot : ModelSnapshot
+    [Migration("20220419035729_InitialMigrationV5")]
+    partial class InitialMigrationV5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,9 +74,6 @@ namespace ImpulsionaTech.Contas.Infrastructure.Migrations
 
                     b.HasIndex("ClienteId1");
 
-                    b.HasIndex("TipoContaId")
-                        .IsUnique();
-
                     b.HasIndex("ClienteId", "TipoContaId")
                         .IsUnique();
 
@@ -114,9 +113,7 @@ namespace ImpulsionaTech.Contas.Infrastructure.Migrations
             modelBuilder.Entity("ImpulsionaTech.Contas.Domain.Models.TiposConta.TipoConta", b =>
                 {
                     b.Property<int>("TipoContaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
@@ -168,10 +165,13 @@ namespace ImpulsionaTech.Contas.Infrastructure.Migrations
                     b.HasOne("ImpulsionaTech.Contas.Domain.Models.Clientes.Cliente", "Cliente")
                         .WithMany()
                         .HasForeignKey("ClienteId1");
+                });
 
-                    b.HasOne("ImpulsionaTech.Contas.Domain.Models.TiposConta.TipoConta", "TipoConta")
-                        .WithOne("Conta")
-                        .HasForeignKey("ImpulsionaTech.Contas.Domain.Models.Contas.Conta", "TipoContaId")
+            modelBuilder.Entity("ImpulsionaTech.Contas.Domain.Models.TiposConta.TipoConta", b =>
+                {
+                    b.HasOne("ImpulsionaTech.Contas.Domain.Models.Contas.Conta", "Conta")
+                        .WithOne("TipoConta")
+                        .HasForeignKey("ImpulsionaTech.Contas.Domain.Models.TiposConta.TipoConta", "TipoContaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

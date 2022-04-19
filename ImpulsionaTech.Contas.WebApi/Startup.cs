@@ -53,23 +53,18 @@ namespace ImpulsionaTech.Contas.WebApi
                 ForMember(src => src.Status, dest => dest.MapFrom(opt => new { Status = Status.Ativo }.Status));
 
                 cfg.CreateMap<Cliente, ClienteResponse>().
-                ForMember(src => src.Contas, dest => dest.MapFrom(opt => new List<Conta>())).
-                AfterMap((src, dest) => {
-                    dest.Contas = src.Contas;
-                });
+                ForMember(src => src.Contas, dest => dest.MapFrom(opt => opt.Contas)) ;
+                //AfterMap((src, dest) => {
+                //    dest.Contas = src.Contas.Select(x => ;
+                //});
 
                 cfg.CreateMap<ContaRequest, Conta>().
                 ForMember(src => src.Status, dest => dest.MapFrom(opt => new { Status = Status.Ativo }.Status));
-                //.ForMember(sxr => sxr.Cliente, dest => dest.MapFrom(opt => new Cliente()))
-                //.AfterMap((src,dest) => { dest.Cliente.ClienteId = src.ClienteId; })
-                //.ForMember(sxr => sxr.TipoConta, dest => dest.MapFrom(opt => new TipoConta()))
-                //.AfterMap((src, dest) => { dest.TipoConta.TipoContaId = src.TipoContaId; });
                 cfg.CreateMap<Conta, ContaResponse>();
             });
             IMapper mapper = config.CreateMapper();
             services.AddSingleton(mapper);
 
-            //services.AddDbContext<EFContext>(_ => _.UseInMemoryDatabase("TesteDatabase"));
             services.AddDbContext<EFContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient(typeof(RepositoryBase<>));
             services.AddTransient<IUnitOfWork<TipoConta>, UnitOfWork<TipoConta>>();
