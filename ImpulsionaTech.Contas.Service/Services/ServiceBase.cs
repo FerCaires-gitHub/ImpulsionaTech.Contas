@@ -38,21 +38,29 @@ namespace ImpulsionaTech.Contas.Application.Services
             
         }
 
-        public async Task<TDestination> GetAsync(int id)
+        public virtual async Task<TDestination> GetAsync(int id)
         {
             var response = await _repository.GetAsync(id);
             return _mapper.Map<TDestination>(response);
         }
 
-        public async Task<TDestination> InsertAsync(TSource entity)
+        public virtual async Task<TDestination> InsertAsync(TSource entity)
         {
-            var request = _mapper.Map<T>(entity);
-            var response = await _repository.AddAsync(request);
-            await _unitOfWork.SaveChangesAsync();
-            return _mapper.Map<TDestination>(response);
+            try
+            {
+                var request = _mapper.Map<T>(entity);
+                var response = await _repository.AddAsync(request);
+                await _unitOfWork.SaveChangesAsync();
+                return _mapper.Map<TDestination>(response);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
-        public async Task<IEnumerable<TDestination>> ListAsync()
+        public virtual async Task<IEnumerable<TDestination>> ListAsync()
         {
             var response = await _repository.ListAsync();
             return response.Select(x => _mapper.Map<TDestination>(x));

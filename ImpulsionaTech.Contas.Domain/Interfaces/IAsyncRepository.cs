@@ -15,5 +15,7 @@ namespace ImpulsionaTech.Contas.Domain.Interfaces
         Task<T> GetAsync(int id);
         Task<IEnumerable<T>> ListAsync();
 
+        Task<IEnumerable<T>> GetByAsync(Expression<Func<T, bool>> expression);
+
     }
 }

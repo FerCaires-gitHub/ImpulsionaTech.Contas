@@ -11,7 +11,7 @@ namespace ImpulsionaTech.Contas.Domain.Interfaces
                                                             where TDestination:class
                                                             where T: BaseEntity
     {
-        Task<TDestination> InsertAsync(TSource entity);
+        Task<TDestination>  InsertAsync(TSource entity);
         Task<TDestination> UpdateAsync(TSource entity);
         Task<TDestination> GetAsync(int id);
         Task DeletetAsync(int id);

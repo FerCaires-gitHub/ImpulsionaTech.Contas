@@ -1,4 +1,5 @@
 ﻿using ImpulsionaTech.Contas.Domain.Base;
+using ImpulsionaTech.Contas.Domain.Models.Contas;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,5 +13,6 @@ namespace ImpulsionaTech.Contas.Domain.Models.TiposConta
         [Required]
         [StringLength(50,ErrorMessage ="Descrição deve apresentar no máximo 50 caracteres")]
         public string Descricao { get; set; }
+
     }
 }

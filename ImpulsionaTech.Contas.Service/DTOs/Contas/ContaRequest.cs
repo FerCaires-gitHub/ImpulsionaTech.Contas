@@ -10,6 +10,5 @@ namespace ImpulsionaTech.Contas.Application.DTOs.Contas
     {
         public int ClienteId { get; set; }
         public int TipoContaId { get; set; }
-        public decimal Saldo { get; set; }
     }
 }

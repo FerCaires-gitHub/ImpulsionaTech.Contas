@@ -21,6 +21,30 @@ namespace ImpulsionaTech.Contas.Infrastructure.Data
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            
+            modelBuilder.Entity<Conta>().
+                HasIndex(a => new { a.ClienteId, a.TipoContaId })
+                .IsUnique();
+
+            modelBuilder.Entity<Cliente>().
+                HasMany(a => a.Contas).
+                WithOne();
+            modelBuilder.Entity<Cliente>().
+                HasIndex(a => a.CPF).
+                IsUnique();
+            modelBuilder.Entity<TipoConta>().
+                HasData(new List<TipoConta> {
+                 new TipoConta { TipoContaId = 1, Descricao = "Corrente", Status = Status.Ativo},
+                 new TipoConta { TipoContaId = 2, Descricao = "Salário", Status = Status.Ativo},
+                 new TipoConta { TipoContaId = 3, Descricao = "Poupança", Status = Status.Ativo},
+                 new TipoConta { TipoContaId = 4, Descricao = "Investimento", Status = Status.Ativo}}
+                );
+
+
+        }
+
         public static void Initialize(EFContext context)
         {
             var tiposConta = new List<TipoConta>
@@ -30,8 +54,8 @@ namespace ImpulsionaTech.Contas.Infrastructure.Data
              new TipoConta { TipoContaId = 3, Descricao = "Poupança", Status = Status.Ativo},
              new TipoConta { TipoContaId = 4, Descricao = "Investimento", Status = Status.Ativo}
             };
-            context.TiposConta.AddRange(tiposConta);
-            context.SaveChanges();
+            //context.TiposConta.AddRange(tiposConta);
+            //context.SaveChanges();
         }
     }
 }

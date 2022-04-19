@@ -1,5 +1,6 @@
 ﻿using ImpulsionaTech.Contas.Domain.Base;
 using ImpulsionaTech.Contas.Domain.Models.Contas;
+using ImpulsionaTech.Contas.Domain.Shared.Annotation;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,8 +21,8 @@ namespace ImpulsionaTech.Contas.Domain.Models.Clientes
         [Required]
         [StringLength(50,ErrorMessage ="Nome não pode ter mais de 50 caracteres")]
         public string Nome { get; set; }
-     
 
+        public IEnumerable<Conta> Contas { get; set; }
         public void Update(string cpf, string nome)
         {
             this.CPF = cpf;

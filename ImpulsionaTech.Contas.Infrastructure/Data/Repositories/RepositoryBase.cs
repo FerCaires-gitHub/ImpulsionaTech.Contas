@@ -21,10 +21,18 @@ namespace ImpulsionaTech.Contas.Infrastructure.Data.Repositories
         }
         public async Task<T> AddAsync(T entity)
         {
-            if (entity == null)
-                throw new Exception($"{typeof(T).Name} está nula ou não informada");
-            await _dbSet.AddAsync(entity);
-            return entity;
+            try
+            {
+                if (entity == null)
+                    throw new Exception($"{typeof(T).Name} está nula ou não informada");
+                await _dbSet.AddAsync(entity);
+                return entity;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
         public Task DeleteAsync(T entity)
@@ -38,6 +46,11 @@ namespace ImpulsionaTech.Contas.Infrastructure.Data.Repositories
         public async Task<T> GetAsync(int id)
         {
             return await _dbSet.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<T>> GetByAsync(Expression<Func<T,bool>> expression)
+        {
+            return await _dbSet.Where(expression).ToListAsync();
         }
 
         public async Task<IEnumerable<T>> ListAsync()
