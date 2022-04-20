@@ -48,7 +48,7 @@ namespace ImpulsionaTech.Contas.Infrastructure.Data.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task<IEnumerable<T>> GetByAsync(Expression<Func<T,bool>> expression)
+        public async Task<IEnumerable<T>> GetByIdAsync(Expression<Func<T,bool>> expression)
         {
             return await _dbSet.Where(expression).ToListAsync();
         }

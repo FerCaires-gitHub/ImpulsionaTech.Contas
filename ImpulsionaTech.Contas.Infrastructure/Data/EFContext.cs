@@ -23,6 +23,12 @@ namespace ImpulsionaTech.Contas.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<MovimentacaoBancaria>()
+                .HasIndex(p => p.ClienteId);
+
+            modelBuilder.Entity<MovimentacaoBancaria>()
+                .HasIndex(p => p.ContaId);
+
             modelBuilder.Entity<TipoConta>().
                 HasOne(b => b.Conta).
                 WithOne(a => a.TipoConta).

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ImpulsionaTech.Contas.Application.DTOs.Contas;
+using ImpulsionaTech.Contas.Application.DTOs.MovimentacoesBancarias;
 using ImpulsionaTech.Contas.Application.Interfaces;
 using ImpulsionaTech.Contas.Domain.Interfaces;
 using ImpulsionaTech.Contas.Domain.Models.Clientes;
@@ -15,32 +16,44 @@ namespace ImpulsionaTech.Contas.Application.Services.Contas
 {
     public class ContaService : ServiceBase<ContaRequest, ContaResponse, Conta>, IContaService
     {
-        private readonly IMapper _mapper;
         private readonly IUnitOfWork<Conta> _unitOfWork;
-        private readonly IUnitOfWork<Cliente> _unitOfCliente;
-        private readonly IUnitOfWork<TipoConta> _unitOfTipoConta;
+        private readonly IAsyncRepository<Conta> _contaRepository;
 
-        public ContaService(IMapper mapper, IUnitOfWork<Conta> unitOfWork, IUnitOfWork<Cliente> unitOfCliente, IUnitOfWork<TipoConta> unitOfTipoConta)
-            :base(mapper,unitOfWork)
+        public ContaService(IMapper mapper, IUnitOfWork<Conta> unitOfWork)
+            : base(mapper, unitOfWork)
         {
-            _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _unitOfCliente = unitOfCliente;
-            _unitOfTipoConta = unitOfTipoConta;
+            _contaRepository = _unitOfWork.Repository();
         }
 
-        //public override async Task<ContaResponse> InsertAsync(ContaRequest entity)
-        //{
-        //    var cliente = await _unitOfCliente.Repository().GetAsync(entity.ClienteId);
-        //    if (cliente == null) 
-        //        throw new Exception($"Cliente de id: {entity.ClienteId} não encontrado");
-        //    var tipoConta = await _unitOfTipoConta.Repository().GetAsync(entity.TipoContaId);
-        //    if (tipoConta == null)
-        //        throw new Exception($"Tipo Conta de id:{entity.TipoContaId} não encontrado");
-        //    var conta = new Conta { ClienteId = cliente.ClienteId, TipoContaId = tipoConta.TipoContaId, Status = Status.Ativo, Saldo = 0 };
-        //    await _unitOfWork.Repository().AddAsync(conta);
-        //    await _unitOfWork.SaveChangesAsync();
-        //    return _mapper.Map<ContaResponse>(conta);
-        //}
+        public async Task<bool> AtualizaSaldoBancario(MovimentacaoBancariaRequest movimentacaoBancariaRequest)
+        {
+            if (movimentacaoBancariaRequest == null) throw new Exception($"Objeto do tipo {typeof(MovimentacaoBancariaRequest).Name} nulo ou não informado");
+            var conta = await RecuperaConta(movimentacaoBancariaRequest);
+            await AtualizaSaldo(movimentacaoBancariaRequest, conta);
+            return true;
+        }
+
+        private async Task<Conta> RecuperaConta(MovimentacaoBancariaRequest movimentacaoBancariaRequest)
+        {
+            var conta = await _unitOfWork.Repository().GetAsync(movimentacaoBancariaRequest.ContaId);
+            if (conta == null) throw new Exception($"Conta de id :{movimentacaoBancariaRequest.ContaId} não encontrada");
+            return conta;
+        }
+
+        private async Task AtualizaSaldo(MovimentacaoBancariaRequest movimentacaoBancariaRequest, Conta conta)
+        {
+            if (movimentacaoBancariaRequest.TipoMovimentacao == TipoMovimentacao.Deposito)
+                conta.Saldo += movimentacaoBancariaRequest.Valor;
+            else
+            {
+                if (conta.Saldo <= 0)
+                    throw new Exception("Saldo da conta menor ou igual a zero");
+                else if (conta.Saldo - movimentacaoBancariaRequest.Valor <= 0)
+                    throw new Exception("Saldo da conta ficará negativo em caso de saque realizado");
+                conta.Saldo -= movimentacaoBancariaRequest.Valor;
+            }
+            await _contaRepository.UpdateAsync(conta);
+        }
     }
 }

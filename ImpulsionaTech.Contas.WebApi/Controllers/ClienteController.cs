@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ImpulsionaTech.Contas.WebApi.Controllers
 {
     [ApiController]
-    [Route("Clientes")]
+    [Route("v1/Clientes")]
     public class ClienteController : ControllerBase
     {
 
@@ -27,36 +27,50 @@ namespace ImpulsionaTech.Contas.WebApi.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult> GetById(int id)
+        public async Task<ActionResult<ClienteResponse>> GetById(int id)
         {
             try
             {
-                var response = await _service.GetAsync(id);
+                var response = await _service.GetByIdAsync(id);
                 return Ok(response);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        [Route("{id}/contas")]
+        public async Task<ActionResult<ClienteResponse>> GetContasByCliente(int id)
+        {
+            try
+            {
+                var response = await _service.GetContasByClientAsync(id);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<ClienteResponse>>> GetAll()
         {
             try
             {
                 var response = await _service.ListAsync();
                 return Ok(response);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpDelete]
+        [Route("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             try
@@ -64,15 +78,14 @@ namespace ImpulsionaTech.Contas.WebApi.Controllers
                 await _service.DeletetAsync(id);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult> Insert(ClienteRequest request)
+        public async Task<ActionResult<ClienteResponse>> Insert(ClienteRequest request)
         {
 
             try

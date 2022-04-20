@@ -38,7 +38,7 @@ namespace ImpulsionaTech.Contas.Application.Services
             
         }
 
-        public virtual async Task<TDestination> GetAsync(int id)
+        public virtual async Task<TDestination> GetByIdAsync(int id)
         {
             var response = await _repository.GetAsync(id);
             return _mapper.Map<TDestination>(response);

@@ -13,9 +13,10 @@ namespace ImpulsionaTech.Contas.Domain.Interfaces
     {
         Task<TDestination>  InsertAsync(TSource entity);
         Task<TDestination> UpdateAsync(TSource entity);
-        Task<TDestination> GetAsync(int id);
+        Task<TDestination> GetByIdAsync(int id);
         Task DeletetAsync(int id);
         Task<IEnumerable<TDestination>> ListAsync();
+
 
     }
 }

@@ -3,12 +3,13 @@ using ImpulsionaTech.Contas.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ImpulsionaTech.Contas.WebApi.Controllers
 {
     [ApiController]
-    [Route("Contas")]
+    [Route("v1/Contas")]
     public class ContaController : ControllerBase
     {
 
@@ -24,36 +25,35 @@ namespace ImpulsionaTech.Contas.WebApi.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult> GetById(int id)
+        public async Task<ActionResult<ContaResponse>> GetById(int id)
         {
             try
             {
-                var response = await _service.GetAsync(id);
+                var response = await _service.GetByIdAsync(id);
                 return Ok(response);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult<List<ContaResponse>>> GetAll()
         {
             try
             {
                 var response = await _service.ListAsync();
                 return Ok(response);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpDelete]
+        [Route("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             try
@@ -61,15 +61,14 @@ namespace ImpulsionaTech.Contas.WebApi.Controllers
                 await _service.DeletetAsync(id);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult> Insert(ContaRequest request)
+        public async Task<ActionResult<ContaResponse>> Insert(ContaRequest request)
         {
 
             try

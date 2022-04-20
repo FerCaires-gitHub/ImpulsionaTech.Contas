@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ImpulsionaTech.Contas.Application.DTOs.Clientes;
+using ImpulsionaTech.Contas.Application.DTOs.Contas;
 using ImpulsionaTech.Contas.Application.Interfaces;
 using ImpulsionaTech.Contas.Domain.Interfaces;
 using ImpulsionaTech.Contas.Domain.Models.Clientes;
@@ -28,11 +29,11 @@ namespace ImpulsionaTech.Contas.Application.Services.Clientes
             _clienteRepository = _unitOfWork.Repository();
         }
 
-        public async override Task<ClienteResponse> GetAsync(int id)
+        public async Task<ClienteResponse> GetContasByClientAsync(int id)
         {
             var cliente = await _clienteRepository.GetAsync(id);
             if (cliente == null) throw new Exception($"Cliente de Id:{id} não encontrado");
-            var contas = await _repository.GetByAsync(x => x.ClienteId == id);
+            var contas = await _repository.GetByIdAsync(x => x.ClienteId == id);
             cliente.Contas = contas;
             return _mapper.Map<ClienteResponse>(cliente);
 

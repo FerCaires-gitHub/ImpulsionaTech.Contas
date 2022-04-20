@@ -1,15 +1,18 @@
 using AutoMapper;
 using ImpulsionaTech.Contas.Application.DTOs.Clientes;
 using ImpulsionaTech.Contas.Application.DTOs.Contas;
+using ImpulsionaTech.Contas.Application.DTOs.MovimentacoesBancarias;
 using ImpulsionaTech.Contas.Application.DTOs.TiposConta;
 using ImpulsionaTech.Contas.Application.Interfaces;
 using ImpulsionaTech.Contas.Application.Services;
 using ImpulsionaTech.Contas.Application.Services.Clientes;
 using ImpulsionaTech.Contas.Application.Services.Contas;
+using ImpulsionaTech.Contas.Application.Services.MovimentacoesBancarias;
 using ImpulsionaTech.Contas.Application.Services.TiposConta;
 using ImpulsionaTech.Contas.Domain.Interfaces;
 using ImpulsionaTech.Contas.Domain.Models.Clientes;
 using ImpulsionaTech.Contas.Domain.Models.Contas;
+using ImpulsionaTech.Contas.Domain.Models.MovimentacoesBancarias;
 using ImpulsionaTech.Contas.Domain.Models.TiposConta;
 using ImpulsionaTech.Contas.Domain.Shared.Enum;
 using ImpulsionaTech.Contas.Infrastructure.Data;
@@ -45,6 +48,7 @@ namespace ImpulsionaTech.Contas.WebApi
         {
             var config = new AutoMapper.MapperConfiguration(cfg =>
             {
+                cfg.AllowNullCollections = true;
                 cfg.CreateMap<TipoContaRequest, TipoConta>().
                 ForMember( src => src.Status, dest => dest.MapFrom(opt => new { Status = Status.Ativo}.Status));
                 cfg.CreateMap<TipoConta, TipoContaResponse>();
@@ -52,15 +56,19 @@ namespace ImpulsionaTech.Contas.WebApi
                 cfg.CreateMap<ClienteRequest, Cliente>().
                 ForMember(src => src.Status, dest => dest.MapFrom(opt => new { Status = Status.Ativo }.Status));
 
-                cfg.CreateMap<Cliente, ClienteResponse>().
-                ForMember(src => src.Contas, dest => dest.MapFrom(opt => opt.Contas)) ;
-                //AfterMap((src, dest) => {
-                //    dest.Contas = src.Contas.Select(x => ;
-                //});
+                cfg.CreateMap<Cliente, ClienteResponse>();
+                //ForMember(src => src.Contas, dest => dest.MapFrom(opt => opt.Contas));
 
                 cfg.CreateMap<ContaRequest, Conta>().
                 ForMember(src => src.Status, dest => dest.MapFrom(opt => new { Status = Status.Ativo }.Status));
                 cfg.CreateMap<Conta, ContaResponse>();
+
+                cfg.CreateMap<MovimentacaoBancariaRequest, MovimentacaoBancaria>().
+                ForMember(src => src.Status, dest => dest.MapFrom(opt => new { Status = Status.Ativo }.Status)).
+                ForMember(src => src.Data, dest => dest.MapFrom(opt => new { Data = DateTime.Now }.Data));
+                cfg.CreateMap<MovimentacaoBancaria, MovimentacaoBancariaResponse>();
+                cfg.CreateMap<MovimentacaoBancaria, MovimentacaoBancariaRequest>();
+
             });
             IMapper mapper = config.CreateMapper();
             services.AddSingleton(mapper);
@@ -70,12 +78,15 @@ namespace ImpulsionaTech.Contas.WebApi
             services.AddTransient<IUnitOfWork<TipoConta>, UnitOfWork<TipoConta>>();
             services.AddTransient<IUnitOfWork<Cliente>, UnitOfWork<Cliente>>();
             services.AddTransient<IUnitOfWork<Conta>, UnitOfWork<Conta>>();
+            services.AddTransient<IUnitOfWork<MovimentacaoBancaria>, UnitOfWork<MovimentacaoBancaria>>();
             services.AddTransient<IClienteService, ClienteService>();
             services.AddTransient<ITipoContaService, TipoContaService>();
             services.AddTransient<IContaService, ContaService>();
+            services.AddTransient<IMovimentacaoBancariaService, MovimentacaoBancariaService>();
             services.AddTransient<IServiceBase<ContaRequest, ContaResponse, Conta>, ServiceBase<ContaRequest, ContaResponse, Conta>>();
             services.AddTransient<IServiceBase<TipoContaRequest, TipoContaResponse, TipoConta>, ServiceBase<TipoContaRequest, TipoContaResponse, TipoConta>>();
             services.AddTransient<IServiceBase<ClienteRequest, ClienteResponse, Cliente>, ServiceBase<ClienteRequest, ClienteResponse, Cliente>>();
+            services.AddTransient<IServiceBase<MovimentacaoBancariaRequest, MovimentacaoBancariaResponse, MovimentacaoBancaria>, ServiceBase<MovimentacaoBancariaRequest, MovimentacaoBancariaResponse, MovimentacaoBancaria>>();
             services.AddSwaggerGen(swagger =>
             {
                 swagger.SwaggerDoc("v1", new OpenApiInfo { Title = "ImpulsionaTech.Contas" });

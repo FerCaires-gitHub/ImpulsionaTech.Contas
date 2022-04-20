@@ -14,8 +14,7 @@ namespace ImpulsionaTech.Contas.Domain.Interfaces
         Task DeleteAsync(T entity);
         Task<T> GetAsync(int id);
         Task<IEnumerable<T>> ListAsync();
-
-        Task<IEnumerable<T>> GetByAsync(Expression<Func<T, bool>> expression);
+        Task<IEnumerable<T>> GetByIdAsync(Expression<Func<T, bool>> expression);
 
     }
 }

@@ -3,12 +3,13 @@ using ImpulsionaTech.Contas.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ImpulsionaTech.Contas.WebApi.Controllers
 {
     [ApiController]
-    [Route("TiposConta")]
+    [Route("v1/TiposConta")]
     public class TipoContaController : ControllerBase
     {
 
@@ -24,36 +25,35 @@ namespace ImpulsionaTech.Contas.WebApi.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult> GetById(int id)
+        public async Task<ActionResult<TipoContaResponse>> GetById(int id)
         {
             try
             {
-                var response = await _service.GetAsync(id);
+                var response = await _service.GetByIdAsync(id);
                 return Ok(response);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult<List<TipoContaResponse>>> GetAll()
         {
             try
             {
                 var response = await _service.ListAsync();
                 return Ok(response);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpDelete]
+        [Route("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             try
@@ -61,15 +61,15 @@ namespace ImpulsionaTech.Contas.WebApi.Controllers
                  await _service.DeletetAsync(id);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult> Insert(TipoContaRequest request)
+        public async Task<ActionResult<TipoContaResponse>> Insert(TipoContaRequest request)
         {
 
             try
